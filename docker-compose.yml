@@ -1,0 +1,33 @@
+services:
+  app:
+    build: .
+    image: pulsewatch:latest
+    restart: unless-stopped
+    environment:
+      CHECK_INTERVAL_MS: "15000"
+    volumes:
+      - pulsewatch-data:/data
+    expose:
+      - "3000"          # internal only; Caddy is the public entrypoint
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      app:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN:-:80}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data        # TLS certs live here: keep this volume
+      - caddy-config:/config
+
+volumes:
+  pulsewatch-data:
+  caddy-data:
+  caddy-config:

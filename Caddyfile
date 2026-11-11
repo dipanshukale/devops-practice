@@ -1,0 +1,9 @@
+{$DOMAIN} {
+	encode zstd gzip
+
+	# Don't expose Prometheus metrics to the internet
+	@internal path /metrics /healthz /readyz
+	respond @internal 404
+
+	reverse_proxy app:3000
+}
