@@ -77,7 +77,7 @@ export function ServiceCard({
             onClick={onAskRemove}
             aria-label={`Stop watching ${target.name}`}
           >
-            Stop watching
+            Pause watching
           </button>
         )}
       </div>
